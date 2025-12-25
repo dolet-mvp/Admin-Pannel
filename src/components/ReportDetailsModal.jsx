@@ -3,9 +3,9 @@ import { X, User, AlertTriangle, FileText, Shield, Clock, CheckCircle } from 'lu
 import '../styles/ReportDetailsModal.css';
 
 const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
-  const [status, setStatus] = useState(report.report.status);
-  const [actionTaken, setActionTaken] = useState(report.report.actionTaken || 'none');
-  const [adminNotes, setAdminNotes] = useState(report.report.adminNotes || '');
+  const [status, setStatus] = useState(report.status);
+  const [actionTaken, setActionTaken] = useState(report.actionTaken || 'none');
+  const [adminNotes, setAdminNotes] = useState(report.adminNotes || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -13,7 +13,7 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
     setIsSubmitting(true);
     
     try {
-      await onUpdate(report.report.id, {
+      await onUpdate(report.id, {
         status,
         actionTaken,
         adminNotes,
@@ -31,6 +31,11 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  const truncateId = (id) => {
+    if (!id) return '';
+    return id.substring(0, 8);
   };
 
   const getCategoryLabel = (category) => {
@@ -64,26 +69,26 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
             <div className="info-grid">
               <div className="info-item">
                 <label>Report ID:</label>
-                <span>{report.report.id}</span>
+                <span className="truncate-id" title={report.id}>{truncateId(report.id)}</span>
               </div>
               <div className="info-item">
                 <label>Category:</label>
-                <span className="category-badge">{getCategoryLabel(report.report.category)}</span>
+                <span className="category-badge">{getCategoryLabel(report.category)}</span>
               </div>
               <div className="info-item">
                 <label>Current Status:</label>
-                <span className={`status-badge status-${report.report.status}`}>
-                  {report.report.status.replace('_', ' ').toUpperCase()}
+                <span className={`status-badge status-${report.status}`}>
+                  {report.status.replace('_', ' ').toUpperCase()}
                 </span>
               </div>
               <div className="info-item">
                 <label>Submitted:</label>
-                <span>{formatDate(report.report.createdAt)}</span>
+                <span>{formatDate(report.createdAt)}</span>
               </div>
-              {report.report.taskId && (
+              {report.taskId && (
                 <div className="info-item">
                   <label>Related Task ID:</label>
-                  <span>{report.report.taskId}</span>
+                  <span className="truncate-id" title={report.taskId}>{truncateId(report.taskId)}</span>
                 </div>
               )}
             </div>
@@ -91,24 +96,19 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
 
           <div className="report-description-section">
             <h3><FileText size={20} /> Description</h3>
-            <p className="description-text">{report.report.description}</p>
+            <p className="description-text">{report.description}</p>
           </div>
 
           <div className="users-section">
             <div className="user-card">
               <h3><User size={20} /> Reporter</h3>
-              {report.reporter ? (
+              {(report.reporterHelper || report.reporterHelpseeker) ? (
                 <div className="user-details">
-                  <img 
-                    src={report.reporter.profilePhoto || '/default-avatar.png'} 
-                    alt={report.reporter.fullName}
-                    className="user-avatar"
-                  />
                   <div className="user-info">
-                    <p className="user-name">{report.reporter.fullName}</p>
-                    <p className="user-type">{report.report.reporterType.toUpperCase()}</p>
-                    <p className="user-contact">{report.reporter.email}</p>
-                    <p className="user-contact">{report.reporter.phone}</p>
+                    <p className="user-name">{(report.reporterHelper || report.reporterHelpseeker).fullName}</p>
+                    <p className="user-type">{report.reporterType.toUpperCase()}</p>
+                    <p className="user-contact">{(report.reporterHelper || report.reporterHelpseeker).email}</p>
+                    <p className="user-contact">{(report.reporterHelper || report.reporterHelpseeker).phone}</p>
                   </div>
                 </div>
               ) : (
@@ -118,25 +118,13 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
 
             <div className="user-card reported-user">
               <h3><Shield size={20} /> Reported User</h3>
-              {report.reportedUser ? (
+              {(report.reportedHelper || report.reportedHelpseeker) ? (
                 <div className="user-details">
-                  <img 
-                    src={report.reportedUser.profilePhoto || '/default-avatar.png'} 
-                    alt={report.reportedUser.fullName}
-                    className="user-avatar"
-                  />
                   <div className="user-info">
-                    <p className="user-name">{report.reportedUser.fullName}</p>
-                    <p className="user-type">{report.report.reportedUserType.toUpperCase()}</p>
-                    <p className="user-contact">{report.reportedUser.email}</p>
-                    <p className="user-contact">{report.reportedUser.phone}</p>
-                    {report.reportedUser.verificationStatus && (
-                      <p className="user-status">
-                        Status: <span className={`status-${report.reportedUser.verificationStatus}`}>
-                          {report.reportedUser.verificationStatus}
-                        </span>
-                      </p>
-                    )}
+                    <p className="user-name">{(report.reportedHelper || report.reportedHelpseeker).fullName}</p>
+                    <p className="user-type">{report.reportedUserType.toUpperCase()}</p>
+                    <p className="user-contact">{(report.reportedHelper || report.reportedHelpseeker).email}</p>
+                    <p className="user-contact">{(report.reportedHelper || report.reportedHelpseeker).phone}</p>
                   </div>
                 </div>
               ) : (
@@ -190,10 +178,10 @@ const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
               />
             </div>
 
-            {report.report.reviewedAt && (
+            {report.reviewedAt && (
               <div className="review-info">
                 <Clock size={16} />
-                <span>Last reviewed on {formatDate(report.report.reviewedAt)}</span>
+                <span>Last reviewed on {formatDate(report.reviewedAt)}</span>
               </div>
             )}
 
