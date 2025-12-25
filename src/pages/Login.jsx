@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, Eye, EyeOff, Shield, ArrowRight } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Shield, ArrowRight, Smartphone } from 'lucide-react';
 import '../styles/Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [requires2FA, setRequires2FA] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,18 +24,27 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ 
+          email, 
+          password,
+          ...(requires2FA && { twoFactorCode })
+        }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('admin', JSON.stringify(data.admin));
-        localStorage.setItem('isAuthenticated', 'true');
-        navigate('/dashboard');
+        if (data.requires2FA) {
+          setRequires2FA(true);
+          setError('');
+        } else {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('admin', JSON.stringify(data.admin));
+          localStorage.setItem('isAuthenticated', 'true');
+          navigate('/dashboard');
+        }
       } else {
-        setError(data.message || 'Invalid email or password');
+        setError(data.message || 'Invalid credentials');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -101,56 +112,100 @@ const Login = () => {
                 </div>
               )}
 
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
-                <div className="input-wrapper">
-                  <Mail size={20} className="input-icon" />
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="admin@dolet.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    autoComplete="email"
-                  />
+              {requires2FA && (
+                <div className="info-message">
+                  <Smartphone size={18} />
+                  <span>Enter the 6-digit code from your authenticator app</span>
                 </div>
-              </div>
+              )}
 
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <div className="input-wrapper">
-                  <Lock size={20} className="input-icon" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    className="toggle-password"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
+              {!requires2FA ? (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="email">Email Address</label>
+                    <div className="input-wrapper">
+                      <Mail size={20} className="input-icon" />
+                      <input
+                        type="email"
+                        id="email"
+                        placeholder="admin@dolet.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <div className="input-wrapper">
+                      <Lock size={20} className="input-icon" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        className="toggle-password"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="form-group">
+                  <label htmlFor="twoFactorCode">Authentication Code</label>
+                  <div className="input-wrapper">
+                    <Smartphone size={20} className="input-icon" />
+                    <input
+                      type="text"
+                      id="twoFactorCode"
+                      placeholder="Enter 6-digit code"
+                      value={twoFactorCode}
+                      onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      required
+                      maxLength={6}
+                      pattern="[0-9]{6}"
+                      autoComplete="one-time-code"
+                      autoFocus
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
 
               <button type="submit" className="login-button" disabled={loading}>
                 {loading ? (
                   <div className="button-loader"></div>
                 ) : (
                   <>
-                    Sign In
+                    {requires2FA ? 'Verify Code' : 'Sign In'}
                     <ArrowRight size={20} className="button-arrow" />
                   </>
                 )}
               </button>
+
+              {requires2FA && (
+                <button 
+                  type="button" 
+                  className="back-button" 
+                  onClick={() => {
+                    setRequires2FA(false);
+                    setTwoFactorCode('');
+                    setError('');
+                  }}
+                >
+                  ← Back to Login
+                </button>
+              )}
             </form>
 
             <div className="login-footer">

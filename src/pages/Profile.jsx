@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Calendar, Shield, Lock, Save, X, Eye, EyeOff, Edit2 } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Shield, Lock, Save, X, Eye, EyeOff, Edit2, Smartphone, QrCode } from 'lucide-react';
 import '../styles/Profile.css';
 
 const Profile = () => {
   const [admin, setAdmin] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [changePasswordMode, setChangePasswordMode] = useState(false);
+  const [twoFactorMode, setTwoFactorMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -21,6 +22,14 @@ const Profile = () => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
+  });
+
+  // 2FA state
+  const [twoFactorData, setTwoFactorData] = useState({
+    qrCode: null,
+    secret: null,
+    verificationCode: '',
+    disablePassword: ''
   });
 
   const [showPasswords, setShowPasswords] = useState({
@@ -124,6 +133,125 @@ const Profile = () => {
     } catch (error) {
       setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
       console.error('Password change error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGenerate2FA = async () => {
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/2fa/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setTwoFactorData({
+          ...twoFactorData,
+          qrCode: data.qrCode,
+          secret: data.secret
+        });
+        setTwoFactorMode(true);
+        setMessage({ type: 'success', text: 'Scan QR code with Google Authenticator app' });
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to generate 2FA' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      console.error('Generate 2FA error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEnable2FA = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/2fa/enable`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          code: twoFactorData.verificationCode
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const updatedAdmin = { ...admin, twoFactorEnabled: true };
+        setAdmin(updatedAdmin);
+        localStorage.setItem('admin', JSON.stringify(updatedAdmin));
+        setMessage({ type: 'success', text: '2FA enabled successfully!' });
+        setTwoFactorMode(false);
+        setTwoFactorData({
+          qrCode: null,
+          secret: null,
+          verificationCode: '',
+          disablePassword: ''
+        });
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Invalid verification code' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      console.error('Enable 2FA error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDisable2FA = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/2fa/disable`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          password: twoFactorData.disablePassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const updatedAdmin = { ...admin, twoFactorEnabled: false };
+        setAdmin(updatedAdmin);
+        localStorage.setItem('admin', JSON.stringify(updatedAdmin));
+        setMessage({ type: 'success', text: '2FA disabled successfully!' });
+        setTwoFactorData({
+          qrCode: null,
+          secret: null,
+          verificationCode: '',
+          disablePassword: ''
+        });
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Failed to disable 2FA' });
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      console.error('Disable 2FA error:', error);
     } finally {
       setLoading(false);
     }
@@ -423,6 +551,137 @@ const Profile = () => {
               </div>
             </form>
           )}
+        </div>
+
+        {/* Two-Factor Authentication Card */}
+        <div className="profile-card">
+          <div className="card-header">
+            <div>
+              <h3>
+                <Smartphone size={20} />
+                Two-Factor Authentication
+              </h3>
+              <p>Add an extra layer of security to your account</p>
+            </div>
+          </div>
+
+          <div className="twofa-section">
+            {!admin.twoFactorEnabled ? (
+              !twoFactorMode ? (
+                <div className="twofa-disabled">
+                  <div className="twofa-info">
+                    <Shield className="twofa-icon disabled" />
+                    <div>
+                      <h4>2FA is currently disabled</h4>
+                      <p>Enable two-factor authentication to secure your account with Google Authenticator</p>
+                    </div>
+                  </div>
+                  <button 
+                    className="enable-twofa-btn" 
+                    onClick={handleGenerate2FA}
+                    disabled={editMode || changePasswordMode || loading}
+                  >
+                    <Smartphone size={18} />
+                    Enable 2FA
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleEnable2FA} className="twofa-setup-form">
+                  <div className="qr-code-section">
+                    <h4>
+                      <QrCode size={20} />
+                      Scan QR Code
+                    </h4>
+                    <p>Scan this QR code with Google Authenticator app</p>
+                    {twoFactorData.qrCode && (
+                      <div className="qr-code-wrapper">
+                        <img src={twoFactorData.qrCode} alt="2FA QR Code" />
+                      </div>
+                    )}
+                    <div className="secret-key">
+                      <span>Manual Entry Key:</span>
+                      <code>{twoFactorData.secret}</code>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      <Lock size={18} />
+                      Verification Code
+                    </label>
+                    <input
+                      type="text"
+                      value={twoFactorData.verificationCode}
+                      onChange={(e) => setTwoFactorData({ ...twoFactorData, verificationCode: e.target.value })}
+                      placeholder="Enter 6-digit code"
+                      required
+                      disabled={loading}
+                      maxLength={6}
+                      pattern="[0-9]{6}"
+                    />
+                  </div>
+
+                  <div className="form-actions">
+                    <button type="submit" className="save-btn" disabled={loading}>
+                      <Save size={18} />
+                      {loading ? 'Verifying...' : 'Enable 2FA'}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="cancel-btn" 
+                      onClick={() => {
+                        setTwoFactorMode(false);
+                        setTwoFactorData({
+                          qrCode: null,
+                          secret: null,
+                          verificationCode: '',
+                          disablePassword: ''
+                        });
+                      }}
+                      disabled={loading}
+                    >
+                      <X size={18} />
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )
+            ) : (
+              <div className="twofa-enabled">
+                <div className="twofa-info">
+                  <Shield className="twofa-icon enabled" />
+                  <div>
+                    <h4>2FA is enabled</h4>
+                    <p>Your account is protected with two-factor authentication</p>
+                  </div>
+                </div>
+                <div className="disable-twofa-form">
+                  <h4>Disable Two-Factor Authentication</h4>
+                  <p>Enter your password to disable 2FA</p>
+                  <form onSubmit={handleDisable2FA}>
+                    <div className="form-group">
+                      <label>
+                        <Lock size={18} />
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        value={twoFactorData.disablePassword}
+                        onChange={(e) => setTwoFactorData({ ...twoFactorData, disablePassword: e.target.value })}
+                        placeholder="Enter your password"
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+                    <button type="submit" className="disable-btn" disabled={loading || editMode || changePasswordMode}>
+                      <X size={18} />
+                      {loading ? 'Disabling...' : 'Disable 2FA'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
