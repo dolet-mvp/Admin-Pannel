@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import AnalyticsDashboard from './AnalyticsDashboard';
 import PendingApprovals from '../components/PendingApprovals';
 import AllHelpers from '../components/AllHelpers';
 import AllHelpseekers from '../components/AllHelpseekers';
 import BlockedUsers from './BlockedUsers';
+import Reports from './Reports';
+import SupportTickets from './SupportTickets';
 import Profile from './Profile';
 import { LogOut, Menu, X } from 'lucide-react';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('pending');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -48,10 +51,13 @@ const Dashboard = () => {
         </header>
 
         <div className="dashboard-content">
+          {activeTab === 'dashboard' && <AnalyticsDashboard />}
           {activeTab === 'pending' && <PendingApprovals />}
           {activeTab === 'all-helpers' && <AllHelpers />}
           {activeTab === 'all-helpseekers' && <AllHelpseekers />}
           {activeTab === 'blocked-users' && <BlockedUsers />}
+          {activeTab === 'reports' && <Reports />}
+          {activeTab === 'support' && <SupportTickets />}
           {activeTab === 'profile' && <Profile />}
         </div>
       </div>

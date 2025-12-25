@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Shield, ArrowRight } from 'lucide-react';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -46,74 +46,118 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-background">
-        <div className="shape shape-1"></div>
-        <div className="shape shape-2"></div>
-        <div className="shape shape-3"></div>
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+        <div className="grid-pattern"></div>
       </div>
       
-      <div className="login-card">
-        <div className="login-header">
-          <div className="logo-circle">
-            <Lock size={32} />
+      <div className="login-content">
+        <div className="login-left">
+          <div className="brand-section">
+            <div className="brand-logo">
+              <Shield size={40} strokeWidth={2} />
+            </div>
+            <h1 className="brand-title">Dolet Admin</h1>
+            <p className="brand-subtitle">Secure administrative access to manage your platform with confidence</p>
           </div>
-          <h1>Welcome Back</h1>
-          <p>Sign in to your admin account</p>
+          <div className="features-list">
+            <div className="feature-item">
+              <div className="feature-icon">✓</div>
+              <div className="feature-text">
+                <h4>Real-time Analytics</h4>
+                <p>Monitor system performance instantly</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">✓</div>
+              <div className="feature-text">
+                <h4>User Management</h4>
+                <p>Complete control over user accounts</p>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-icon">✓</div>
+              <div className="feature-text">
+                <h4>Secure Platform</h4>
+                <p>Enterprise-grade security measures</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <form onSubmit={handleLogin} className="login-form">
-          {error && (
-            <div className="error-message">
-              {error}
+        <div className="login-right">
+          <div className="login-card">
+            <div className="login-header">
+              <h2>Welcome Back</h2>
+              <p>Enter your credentials to access your account</p>
             </div>
-          )}
 
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <div className="input-wrapper">
-              <Mail size={20} className="input-icon" />
-              <input
-                type="email"
-                id="email"
-                placeholder="admin@dolet.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+            <form onSubmit={handleLogin} className="login-form">
+              {error && (
+                <div className="error-message">
+                  <span className="error-icon">⚠</span>
+                  {error}
+                </div>
+              )}
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <div className="input-wrapper">
-              <Lock size={20} className="input-icon" />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <div className="input-wrapper">
+                  <Mail size={20} className="input-icon" />
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="admin@dolet.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <div className="input-wrapper">
+                  <Lock size={20} className="input-icon" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" className="login-button" disabled={loading}>
+                {loading ? (
+                  <div className="button-loader"></div>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight size={20} className="button-arrow" />
+                  </>
+                )}
               </button>
+            </form>
+
+            <div className="login-footer">
+              <p>Protected by enterprise security</p>
             </div>
           </div>
-
-          <button type="submit" className="login-button" disabled={loading}>
-            {loading ? (
-              <div className="button-loader"></div>
-            ) : (
-              'Sign In'
-            )}
-          </button>
-
-        
-        </form>
+        </div>
       </div>
     </div>
   );

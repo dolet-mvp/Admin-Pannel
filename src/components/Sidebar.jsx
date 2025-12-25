@@ -1,4 +1,4 @@
-import { Users, UserCheck, X, LogOut, User, Shield, UserCircle } from 'lucide-react';
+import { Users, UserCheck, X, LogOut, User, Shield, UserCircle, AlertTriangle, Headphones, BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
@@ -6,6 +6,11 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   
   const menuItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: BarChart3,
+    },
     {
       id: 'pending',
       label: 'Pending Helper Approval',
@@ -25,6 +30,16 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
       id: 'blocked-users',
       label: 'Blocked Users',
       icon: Shield,
+    },
+    {
+      id: 'reports',
+      label: 'Reports',
+      icon: AlertTriangle,
+    },
+    {
+      id: 'support',
+      label: 'Support Tickets',
+      icon: Headphones,
     },
     {
       id: 'profile',

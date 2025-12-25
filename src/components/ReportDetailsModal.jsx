@@ -1,0 +1,215 @@
+import { useState } from 'react';
+import { X, User, AlertTriangle, FileText, Shield, Clock, CheckCircle } from 'lucide-react';
+import '../styles/ReportDetailsModal.css';
+
+const ReportDetailsModal = ({ report, onClose, onUpdate }) => {
+  const [status, setStatus] = useState(report.report.status);
+  const [actionTaken, setActionTaken] = useState(report.report.actionTaken || 'none');
+  const [adminNotes, setAdminNotes] = useState(report.report.adminNotes || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      await onUpdate(report.report.id, {
+        status,
+        actionTaken,
+        adminNotes,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const getCategoryLabel = (category) => {
+    const labels = {
+      inappropriate_behavior: 'Inappropriate Behavior',
+      fraud: 'Fraud',
+      harassment: 'Harassment',
+      violence_threat: 'Violence/Threat',
+      spam: 'Spam',
+      fake_profile: 'Fake Profile',
+      payment_issue: 'Payment Issue',
+      poor_service: 'Poor Service',
+      other: 'Other',
+    };
+    return labels[category] || category;
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content report-details-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2><AlertTriangle size={24} /> Report Details</h2>
+          <button className="close-btn" onClick={onClose}>
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="modal-body">
+          <div className="report-info-section">
+            <h3><FileText size={20} /> Report Information</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <label>Report ID:</label>
+                <span>{report.report.id}</span>
+              </div>
+              <div className="info-item">
+                <label>Category:</label>
+                <span className="category-badge">{getCategoryLabel(report.report.category)}</span>
+              </div>
+              <div className="info-item">
+                <label>Current Status:</label>
+                <span className={`status-badge status-${report.report.status}`}>
+                  {report.report.status.replace('_', ' ').toUpperCase()}
+                </span>
+              </div>
+              <div className="info-item">
+                <label>Submitted:</label>
+                <span>{formatDate(report.report.createdAt)}</span>
+              </div>
+              {report.report.taskId && (
+                <div className="info-item">
+                  <label>Related Task ID:</label>
+                  <span>{report.report.taskId}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="report-description-section">
+            <h3><FileText size={20} /> Description</h3>
+            <p className="description-text">{report.report.description}</p>
+          </div>
+
+          <div className="users-section">
+            <div className="user-card">
+              <h3><User size={20} /> Reporter</h3>
+              {report.reporter ? (
+                <div className="user-details">
+                  <img 
+                    src={report.reporter.profilePhoto || '/default-avatar.png'} 
+                    alt={report.reporter.fullName}
+                    className="user-avatar"
+                  />
+                  <div className="user-info">
+                    <p className="user-name">{report.reporter.fullName}</p>
+                    <p className="user-type">{report.report.reporterType.toUpperCase()}</p>
+                    <p className="user-contact">{report.reporter.email}</p>
+                    <p className="user-contact">{report.reporter.phone}</p>
+                  </div>
+                </div>
+              ) : (
+                <p>Reporter information not available</p>
+              )}
+            </div>
+
+            <div className="user-card reported-user">
+              <h3><Shield size={20} /> Reported User</h3>
+              {report.reportedUser ? (
+                <div className="user-details">
+                  <img 
+                    src={report.reportedUser.profilePhoto || '/default-avatar.png'} 
+                    alt={report.reportedUser.fullName}
+                    className="user-avatar"
+                  />
+                  <div className="user-info">
+                    <p className="user-name">{report.reportedUser.fullName}</p>
+                    <p className="user-type">{report.report.reportedUserType.toUpperCase()}</p>
+                    <p className="user-contact">{report.reportedUser.email}</p>
+                    <p className="user-contact">{report.reportedUser.phone}</p>
+                    {report.reportedUser.verificationStatus && (
+                      <p className="user-status">
+                        Status: <span className={`status-${report.reportedUser.verificationStatus}`}>
+                          {report.reportedUser.verificationStatus}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <p>Reported user information not available</p>
+              )}
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="action-form">
+            <h3><CheckCircle size={20} /> Take Action</h3>
+            
+            <div className="form-group">
+              <label htmlFor="status">Update Status *</label>
+              <select 
+                id="status"
+                value={status} 
+                onChange={(e) => setStatus(e.target.value)}
+                required
+              >
+                <option value="pending">Pending</option>
+                <option value="under_review">Under Review</option>
+                <option value="resolved">Resolved</option>
+                <option value="dismissed">Dismissed</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="actionTaken">Action Taken *</label>
+              <select 
+                id="actionTaken"
+                value={actionTaken} 
+                onChange={(e) => setActionTaken(e.target.value)}
+                required
+              >
+                <option value="none">None</option>
+                <option value="no_action_needed">No Action Needed</option>
+                <option value="warning_issued">Warning Issued</option>
+                <option value="account_suspended">Account Suspended</option>
+                <option value="account_banned">Account Banned</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="adminNotes">Admin Notes</label>
+              <textarea 
+                id="adminNotes"
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Add notes about your decision and actions taken..."
+                rows={4}
+              />
+            </div>
+
+            {report.report.reviewedAt && (
+              <div className="review-info">
+                <Clock size={16} />
+                <span>Last reviewed on {formatDate(report.report.reviewedAt)}</span>
+              </div>
+            )}
+
+            <div className="modal-actions">
+              <button type="button" className="cancel-btn" onClick={onClose}>
+                Cancel
+              </button>
+              <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                {isSubmitting ? 'Updating...' : 'Update Report'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ReportDetailsModal;
