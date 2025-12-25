@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
-import { Phone, Search, Star, Calendar } from 'lucide-react';
+import { Phone, Search, Star, Calendar, Eye } from 'lucide-react';
 import SkeletonCard from './SkeletonCard';
+import HelperDetailsModal from './HelperDetailsModal';
 import '../styles/AllHelpers.css';
 
 const AllHelpers = () => {
@@ -8,6 +9,8 @@ const AllHelpers = () => {
   const [filteredHelpers, setFilteredHelpers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedHelperId, setSelectedHelperId] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   useEffect(() => {
     fetchAllHelpers();
@@ -54,6 +57,11 @@ const AllHelpers = () => {
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  const handleViewDetails = (helperId) => {
+    setSelectedHelperId(helperId);
+    setShowDetailsModal(true);
   };
 
   if (loading) {
@@ -148,9 +156,27 @@ const AllHelpers = () => {
                   </div>
                 )}
               </div>
+
+              <button 
+                className="view-details-btn"
+                onClick={() => handleViewDetails(helper.id)}
+              >
+                <Eye size={16} />
+                View Details
+              </button>
             </div>
           ))}
         </div>
+      )}
+
+      {showDetailsModal && selectedHelperId && (
+        <HelperDetailsModal
+          helperId={selectedHelperId}
+          onClose={() => {
+            setShowDetailsModal(false);
+            setSelectedHelperId(null);
+          }}
+        />
       )}
     </div>
   );

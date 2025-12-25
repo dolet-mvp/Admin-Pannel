@@ -1,4 +1,4 @@
-import { Users, UserCheck, X, LogOut, User } from 'lucide-react';
+import { Users, UserCheck, X, LogOut, User, Shield, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
@@ -15,6 +15,16 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
       id: 'all-helpers',
       label: 'All Helpers',
       icon: Users,
+    },
+    {
+      id: 'all-helpseekers',
+      label: 'All Helpseekers',
+      icon: UserCircle,
+    },
+    {
+      id: 'blocked-users',
+      label: 'Blocked Users',
+      icon: Shield,
     },
     {
       id: 'profile',

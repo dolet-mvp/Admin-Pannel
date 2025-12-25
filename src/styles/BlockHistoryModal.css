@@ -1,0 +1,287 @@
+.history-modal {
+  max-width: 800px;
+}
+
+.loading-state,
+.error-state {
+  padding: 3rem;
+  text-align: center;
+  color: #666;
+}
+
+.history-content {
+  padding: 1.5rem;
+}
+
+.user-summary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.user-details {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.user-avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+}
+
+.user-avatar-placeholder-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 2rem;
+  border: 3px solid white;
+}
+
+.user-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.user-email,
+.user-phone {
+  margin: 0.25rem 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.user-info .user-type-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.summary-stats {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+.history-timeline h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #e5e5e5, transparent);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -2rem;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.timeline-item.active .timeline-marker {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px #dc2626;
+}
+
+.timeline-item.inactive .timeline-marker {
+  background: #d1fae5;
+  color: #10b981;
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px #10b981;
+}
+
+.timeline-content {
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-left: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.timeline-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1a1a1a;
+}
+
+.timeline-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.detail-row svg {
+  flex-shrink: 0;
+}
+
+.reason-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-left: 3px solid #3b82f6;
+  border-radius: 4px;
+}
+
+.reason-box.unblock-reason {
+  background: #ecfdf5;
+  border-left-color: #10b981;
+}
+
+.reason-box strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+  font-size: 0.9rem;
+}
+
+.reason-box p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #999;
+}
+
+.empty-history p {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.btn-close {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-close:hover {
+  background: #e5e5e5;
+}
+
+@media (max-width: 768px) {
+  .history-modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .user-summary {
+    padding: 1.5rem;
+  }
+
+  .user-details {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .timeline {
+    padding-left: 1.5rem;
+  }
+
+  .timeline-marker {
+    left: -1.5rem;
+    width: 32px;
+    height: 32px;
+  }
+
+  .timeline-content {
+    margin-left: 0.5rem;
+  }
+
+  .summary-stats {
+    gap: 1rem;
+  }
+}

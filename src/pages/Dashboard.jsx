@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import PendingApprovals from '../components/PendingApprovals';
 import AllHelpers from '../components/AllHelpers';
+import AllHelpseekers from '../components/AllHelpseekers';
+import BlockedUsers from './BlockedUsers';
 import Profile from './Profile';
 import { LogOut, Menu, X } from 'lucide-react';
 import '../styles/Dashboard.css';
@@ -48,6 +50,8 @@ const Dashboard = () => {
         <div className="dashboard-content">
           {activeTab === 'pending' && <PendingApprovals />}
           {activeTab === 'all-helpers' && <AllHelpers />}
+          {activeTab === 'all-helpseekers' && <AllHelpseekers />}
+          {activeTab === 'blocked-users' && <BlockedUsers />}
           {activeTab === 'profile' && <Profile />}
         </div>
       </div>
