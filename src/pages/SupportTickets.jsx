@@ -92,7 +92,16 @@ const SupportTickets = () => {
       const data = await response.json();
       
       if (data.success) {
-        setStats(data.data);
+        // Map the nested byStatus structure to flat structure expected by UI
+        const mappedStats = {
+          total: data.data.total,
+          open: data.data.byStatus?.open || 0,
+          inProgress: data.data.byStatus?.inProgress || 0,
+          waitingForResponse: data.data.byStatus?.waitingForResponse || 0,
+          resolved: data.data.byStatus?.resolved || 0,
+          closed: data.data.byStatus?.closed || 0,
+        };
+        setStats(mappedStats);
       }
     } catch (error) {
       console.error('Error fetching statistics:', error);

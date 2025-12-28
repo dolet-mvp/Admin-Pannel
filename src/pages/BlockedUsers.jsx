@@ -10,7 +10,7 @@ const BlockedUsers = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('active');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [userTypeFilter, setUserTypeFilter] = useState('all');
   const [blockTypeFilter, setBlockTypeFilter] = useState('all');
   const [showBlockModal, setShowBlockModal] = useState(false);
