@@ -207,31 +207,40 @@ const PendingApprovals = () => {
               <div className="documents-section">
                 <h4>Documents</h4>
                 <div className="documents-grid">
-                  {helper.aadharCardDocument && (
+                  {helper.selfie && (
                     <button
                       className="doc-button"
-                      onClick={() => window.open(helper.aadharCardDocument, '_blank')}
+                      onClick={() => window.open(helper.selfie, '_blank')}
+                    >
+                      <FileText size={16} />
+                      Selfie
+                    </button>
+                  )}
+                  {helper.aadharCard && (
+                    <button
+                      className="doc-button"
+                      onClick={() => window.open(helper.aadharCard, '_blank')}
                     >
                       <FileText size={16} />
                       Aadhar Card
                     </button>
                   )}
-                  {helper.addressProofDocument && (
+                  {helper.panCard && (
                     <button
                       className="doc-button"
-                      onClick={() => window.open(helper.addressProofDocument, '_blank')}
+                      onClick={() => window.open(helper.panCard, '_blank')}
+                    >
+                      <FileText size={16} />
+                      PAN Card
+                    </button>
+                  )}
+                  {helper.addressProof && (
+                    <button
+                      className="doc-button"
+                      onClick={() => window.open(helper.addressProof, '_blank')}
                     >
                       <FileText size={16} />
                       Address Proof
-                    </button>
-                  )}
-                  {helper.drivingLicenseDocument && (
-                    <button
-                      className="doc-button"
-                      onClick={() => window.open(helper.drivingLicenseDocument, '_blank')}
-                    >
-                      <FileText size={16} />
-                      Driving License
                     </button>
                   )}
                 </div>

@@ -277,7 +277,35 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
             {activeTab === 'documents' && (
               <div className="documents-tab">
                 <div className="documents-grid">
-                  {helper.aadharCardDocument && (
+                  {helper.selfie && (
+                    <div className="document-card">
+                      <div className="document-header">
+                        <FileText size={24} color="#8b5cf6" />
+                        <h4>Selfie</h4>
+                      </div>
+                      <div className="document-actions">
+                        <a 
+                          href={helper.selfie} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="doc-btn view"
+                        >
+                          <ExternalLink size={16} />
+                          View
+                        </a>
+                        <a 
+                          href={helper.selfie} 
+                          download
+                          className="doc-btn download"
+                        >
+                          <Download size={16} />
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {helper.aadharCard && (
                     <div className="document-card">
                       <div className="document-header">
                         <FileText size={24} color="#3b82f6" />
@@ -285,7 +313,7 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                       </div>
                       <div className="document-actions">
                         <a 
-                          href={helper.aadharCardDocument} 
+                          href={helper.aadharCard} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="doc-btn view"
@@ -294,7 +322,7 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                           View
                         </a>
                         <a 
-                          href={helper.aadharCardDocument} 
+                          href={helper.aadharCard} 
                           download
                           className="doc-btn download"
                         >
@@ -305,7 +333,35 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                     </div>
                   )}
 
-                  {helper.addressProofDocument && (
+                  {helper.panCard && (
+                    <div className="document-card">
+                      <div className="document-header">
+                        <FileText size={24} color="#f59e0b" />
+                        <h4>PAN Card</h4>
+                      </div>
+                      <div className="document-actions">
+                        <a 
+                          href={helper.panCard} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="doc-btn view"
+                        >
+                          <ExternalLink size={16} />
+                          View
+                        </a>
+                        <a 
+                          href={helper.panCard} 
+                          download
+                          className="doc-btn download"
+                        >
+                          <Download size={16} />
+                          Download
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {helper.addressProof && (
                     <div className="document-card">
                       <div className="document-header">
                         <FileText size={24} color="#10b981" />
@@ -313,7 +369,7 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                       </div>
                       <div className="document-actions">
                         <a 
-                          href={helper.addressProofDocument} 
+                          href={helper.addressProof} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="doc-btn view"
@@ -322,7 +378,7 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                           View
                         </a>
                         <a 
-                          href={helper.addressProofDocument} 
+                          href={helper.addressProof} 
                           download
                           className="doc-btn download"
                         >
@@ -333,35 +389,7 @@ const HelperDetailsModal = ({ helperId, onClose }) => {
                     </div>
                   )}
 
-                  {helper.drivingLicenseDocument && (
-                    <div className="document-card">
-                      <div className="document-header">
-                        <FileText size={24} color="#f59e0b" />
-                        <h4>Driving License</h4>
-                      </div>
-                      <div className="document-actions">
-                        <a 
-                          href={helper.drivingLicenseDocument} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="doc-btn view"
-                        >
-                          <ExternalLink size={16} />
-                          View
-                        </a>
-                        <a 
-                          href={helper.drivingLicenseDocument} 
-                          download
-                          className="doc-btn download"
-                        >
-                          <Download size={16} />
-                          Download
-                        </a>
-                      </div>
-                    </div>
-                  )}
-
-                  {!helper.aadharCardDocument && !helper.addressProofDocument && !helper.drivingLicenseDocument && (
+                  {!helper.selfie && !helper.aadharCard && !helper.panCard && !helper.addressProof && (
                     <div className="empty-documents">
                       <FileText size={48} color="#ccc" />
                       <p>No documents uploaded</p>
