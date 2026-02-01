@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import AnalyticsDashboard from './AnalyticsDashboard';
+import JobsPosted from './JobsPosted';
+import ActiveTasks from './ActiveTasks';
 import PendingApprovals from '../components/PendingApprovals';
 import AllHelpers from '../components/AllHelpers';
 import AllHelpseekers from '../components/AllHelpseekers';
@@ -52,6 +54,8 @@ const Dashboard = () => {
 
         <div className="dashboard-content">
           {activeTab === 'dashboard' && <AnalyticsDashboard />}
+          {activeTab === 'jobs-posted' && <JobsPosted />}
+          {activeTab === 'active-tasks' && <ActiveTasks />}
           {activeTab === 'pending' && <PendingApprovals />}
           {activeTab === 'all-helpers' && <AllHelpers />}
           {activeTab === 'all-helpseekers' && <AllHelpseekers />}

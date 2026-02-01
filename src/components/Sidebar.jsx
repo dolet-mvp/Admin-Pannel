@@ -1,4 +1,4 @@
-import { Users, UserCheck, X, LogOut, User, Shield, UserCircle, AlertTriangle, Headphones, BarChart3 } from 'lucide-react';
+import { Users, UserCheck, X, LogOut, User, Shield, UserCircle, AlertTriangle, Headphones, BarChart3, Briefcase, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Sidebar.css';
 
@@ -10,6 +10,16 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
       id: 'dashboard',
       label: 'Dashboard',
       icon: BarChart3,
+    },
+    {
+      id: 'jobs-posted',
+      label: 'Jobs Posted',
+      icon: Briefcase,
+    },
+    {
+      id: 'active-tasks',
+      label: 'Active Tasks',
+      icon: Activity,
     },
     {
       id: 'pending',
