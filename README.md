@@ -1,4 +1,50 @@
-# React + Vite
+# Admin Panel - React + Vite
+
+![CI Pipeline](https://github.com/dolet-mvp/Admin-Pannel/actions/workflows/ci.yml/badge.svg)
+
+This is an Admin Panel application built with React and Vite.
+
+## CI/CD Pipeline
+
+This repository includes automated CI/CD pipelines:
+- ✅ **Continuous Integration:** Automated linting, building, and testing on every push/PR
+- ✅ **GitHub Pages Deployment:** Automatic deployment to GitHub Pages on main branch
+- 📚 **Full Documentation:** See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete CI/CD and deployment guide
+
+## Quick Start
+
+### Development
+```bash
+npm install
+npm run dev
+```
+
+### Build
+```bash
+npm run build
+```
+
+### Preview Production Build
+```bash
+npm run preview
+```
+
+### Linting
+```bash
+npm run lint
+```
+
+## Deployment
+
+The application is configured for automatic deployment to GitHub Pages. See [DEPLOYMENT.md](./DEPLOYMENT.md) for:
+- GitHub Pages setup instructions
+- Alternative deployment options (Vercel, Netlify, custom servers)
+- CI/CD pipeline details
+- Environment variable configuration
+
+---
+
+## React + Vite Setup
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
